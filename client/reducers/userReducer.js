@@ -1,4 +1,6 @@
 import * as types from '../constants/actionTypes';
+import io from 'socket.io-client';
+
 
 const initialState = {
   username: null,
@@ -9,7 +11,14 @@ const initialState = {
   userCreated: false,
   artRecieved: false,
   art: [],
+<<<<<<< HEAD
   googleSignedIn: false
+=======
+  goToChat: false,
+  currMsg: "What do you have to say?",
+  msgsArr: ['Welcome!'],
+  socket: io(),
+>>>>>>> e4e6644... store is being updated by input box
 };
 
 const userReducer = (state = initialState, action) => {
@@ -22,7 +31,12 @@ const userReducer = (state = initialState, action) => {
   let newUserCreated;
   let newArtRecieved;
   let newArt;
+<<<<<<< HEAD
   let newGoogleSignedIn;
+=======
+  let newGoToChat;
+  let newCurrMsg;
+>>>>>>> e4e6644... store is being updated by input box
 
   switch (action.type) {
     case types.GOOGLE_LOGIN:
@@ -125,6 +139,34 @@ const userReducer = (state = initialState, action) => {
       return {
         ...state,
       };
+    
+    case types.CHAT:
+      newGoToChat = action.payload;
+      return {
+        ...state,
+        goToChat: newGoToChat,
+      };
+
+    case types.CURR_MSG:
+      console.log('in curr msg ', action.payload.value)
+      newCurrMsg = action.payload.value;
+      return {
+        ...state,
+        currMsg: newCurrMsg
+      }
+
+    case types.MSG_ARR:
+      console.log('in msg arr without value', action.payload)
+      console.log('in msg arr with value', action.payload.value)
+      let newMsg = action.payload;
+      let newMsgArr = state.msgsArr.slice(0);
+      newMsgArr.push(newMsg);
+      let restartMsg = '';
+      return {
+        ...state,
+        currMsg: restartMsg,
+        msgsArr: newMsgArr,
+      }
 
     default:
       return state;

@@ -15,7 +15,11 @@ module.exports = {
     proxy: {
       '/': 'http://localhost:3000/',
       '/api': 'http://localhost:3000',
+<<<<<<< HEAD
       '/auth/google': 'http://localhost:3000'
+=======
+      '/chat': 'http://localhost:3000/',
+>>>>>>> e4e6644... store is being updated by input box
     }
   },
   module: {

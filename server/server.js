@@ -1,108 +1,100 @@
-const express = require('express');
-const path = require('path');
-const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
+const express = require("express");
+const path = require("path");
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 
-const queryController = require('./controllers/queryController.js');
-const bcryptController = require('./controllers/bcryptController.js');
-const cookieController = require('./controllers/cookieController.js');
-const sessionController = require('./controllers/sessionController.js');
+const queryController = require("./controllers/queryController.js");
+const bcryptController = require("./controllers/bcryptController.js");
+const cookieController = require("./controllers/cookieController.js");
+const sessionController = require("./controllers/sessionController.js");
 
-const testQueryController = require('./controllers/testQueryController.js');
-const testBcryptController = require('./controllers/testBcryptController.js');
-const testCookieController = require('./controllers/testCookieController.js');
-const testSessionController = require('./controllers/testSessionController.js');
+const testQueryController = require("./controllers/testQueryController.js");
+const testBcryptController = require("./controllers/testBcryptController.js");
+const testCookieController = require("./controllers/testCookieController.js");
+const testSessionController = require("./controllers/testSessionController.js");
 
-const mongoose = require('mongoose');
-const cookieSession = require('cookie-session');
-const passport = require('passport');
-const keys = require('../config/keys');
-require('../models/User');
-require('../services/passport');
+const mongoose = require("mongoose");
+const cookieSession = require("cookie-session");
+const passport = require("passport");
+const keys = require("../config/keys");
+require("../models/User");
+require("../services/passport");
 
 mongoose.connect(keys.mongoURI);
 
 const app = express();
 const PORT = 3000;
 
-<<<<<<< HEAD
 app.use(
   cookieSession({
     maxAge: 30 * 24 * 60 * 60 * 1000,
     keys: [keys.cookieKey]
   })
-)
+);
 app.use(passport.initialize());
 app.use(passport.session());
-=======
 //socket.io  --- copied from https://www.npmjs.com/package/socket.io
-const server = require('http').createServer(app);
-const io = require('socket.io')(server);
+const server = require("http").createServer(app);
+const io = require("socket.io")(server);
 // io.listen(server);
-io.sockets.on('connection', (socket) => {
-  let msgArr = []
+io.sockets.on("connection", socket => {
+  let msgArr = [];
   // console.log('this is the socket', socket);
-  console.log('connection made');
-  socket.send('sup');
-  socket.on('message', (data) => {
+  console.log("connection made");
+  socket.send("sup");
+  socket.on("message", data => {
     console.log(data);
     // append data to msgArr
     // socket.emit("sendMsgArrToClient", msgArr)
   });
-  socket.emit('event', 'sup again or something')
+  socket.emit("event", "sup again or something");
   //on emit 1st paraemter is what event is called (string) & second paramter is the data being sent
-  });
+});
 server.listen(PORT);
-
-
-
->>>>>>> e4e6644... store is being updated by input box
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use(function (req, res, next) {
+app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
   next();
 });
 
-<<<<<<< HEAD
-//testing for google signin 
+//testing for google signin
 
 app.get(
-  '/auth/google',
-  passport.authenticate('google', {
-    scope: ['profile', 'email']
+  "/auth/google",
+  passport.authenticate("google", {
+    scope: ["profile", "email"]
   })
 );
 
-app.get(
-  '/Home',
-  passport.authenticate('google')
-)
+app.get("/Home", passport.authenticate("google"));
 
-app.get('/api/current_user', (req, res) => {
+app.get("/api/current_user", (req, res) => {
   res.send(req.user);
 });
 
-app.get('/api/logout', (req, res) => {
+app.get("/api/logout", (req, res) => {
   req.logout();
   res.send(req.user);
-})
+});
 
-=======
-app.use('/build', express.static(path.join(__dirname, '../build')));
->>>>>>> e4e6644... store is being updated by input box
+app.use("/build", express.static(path.join(__dirname, "../build")));
 
-app.get('/api/getallart/', testQueryController.getAllArt, (req, res) => {
+app.get("/api/getallart/", testQueryController.getAllArt, (req, res) => {
   if (res.locals.error) res.send(res.locals.error);
   else res.send(res.locals.result.rows);
 });
 
 // testing for sign up route
-app.post('/api/testauth/',
+app.post(
+  "/api/testauth/",
   testBcryptController.hashPassword,
   testQueryController.testAuth,
   testCookieController.setSSIDCookie,
@@ -111,9 +103,11 @@ app.post('/api/testauth/',
   (req, res) => {
     if (res.locals.error) res.send(res.locals.error);
     else res.send(res.locals.result);
-  });
+  }
+);
 
-app.post('/api/signup',
+app.post(
+  "/api/signup",
   bcryptController.hashPassword,
   queryController.signUp,
   cookieController.setSSIDCookie,
@@ -123,10 +117,11 @@ app.post('/api/signup',
     if (res.locals.error) res.send(res.locals.error);
     else res.send(res.locals.result);
   }
-)
+);
 
 // testing for login route
-app.post('/api/testsignin',
+app.post(
+  "/api/testsignin",
   testQueryController.testSignIn,
   testBcryptController.verifyPassword,
   testCookieController.setSSIDCookie,
@@ -136,24 +131,26 @@ app.post('/api/testsignin',
     if (res.locals.error) {
       res.send(res.locals.error);
       res.status(501);
-    }
-    else res.send(res.locals.result);
-  });
+    } else res.send(res.locals.result);
+  }
+);
 
-app.post('/api/findbydistance',
+app.post(
+  "/api/findbydistance",
   queryController.signIn,
   cookieController.setSSIDCookie,
   sessionController.lookupSession,
-  queryController.findByDistance, (req, res) => {
+  queryController.findByDistance,
+  (req, res) => {
     if (res.locals.error) {
       res.send(res.locals.error);
       res.status(501);
-    }
-    else res.send(res.locals.result);
-  })
+    } else res.send(res.locals.result);
+  }
+);
 
-app.get('/*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../index.html'))
+app.get("/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../index.html"));
 });
 
 // app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
